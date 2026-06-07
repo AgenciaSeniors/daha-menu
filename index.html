@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1F4060">
+    <meta name="description" content="DAHA Restaurante — Carta digital. Comida, tragos y momentos para compartir.">
+
+    <title>DAHA Restaurante | Carta Digital</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat+Brush&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="modal.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <header class="hero-daha">
+        <div class="hero-bg-shapes">
+            <span class="silueta s1"></span>
+            <span class="silueta s2"></span>
+            <span class="silueta s3"></span>
+            <span class="silueta s4"></span>
+        </div>
+
+        <div class="brand-group">
+            <h1 class="daha-logo-text">
+                <span class="lt navy">D</span><span class="lt navy">A</span><span class="lt coral">H</span><span class="lt navy">A</span>
+            </h1>
+            <p class="daha-subtitle">restaurante</p>
+
+            <div class="header-info">
+                <div class="horario-badge">
+                    <div style="display:flex; flex-direction:column; text-align:left; line-height:1.2;">
+                        <span style="font-size:0.7rem; opacity:0.85; text-transform:uppercase; letter-spacing:1px;">Abierto todos los d&iacute;as</span>
+                        <span style="font-size:0.9rem; font-weight:800; letter-spacing:1px;">12:00 PM - 11:00 PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <span class="search-icon">&#9733;</span>
+            <input type="text" id="search-input" placeholder="Buscar platos, tragos...">
+        </div>
+    </div>
+
+    <div class="filters-container">
+      <nav class="filters">
+        <button class="filter-btn active" onclick="irAlInicio(this)">&#127968; Inicio</button>
+        <button class="filter-btn" onclick="filtrar('entrantes', this)">&#127839; Entrantes</button>
+        <button class="filter-btn" onclick="filtrar('plato especial', this)">&#11088; Plato Especial</button>
+        <button class="filter-btn" onclick="filtrar('completas', this)">&#127859; Platos</button>
+        <button class="filter-btn" onclick="filtrar('pizzas', this)">&#127829; Pizzas</button>
+        <button class="filter-btn" onclick="filtrar('pizzas familiares', this)">&#127829; Pizzas Familiares</button>
+        <button class="filter-btn" onclick="filtrar('spaguettis', this)">&#127837; Pastas</button>
+        <button class="filter-btn" onclick="filtrar('bebidas', this)">&#127865; Bebidas</button>
+        <button class="filter-btn" onclick="filtrar('postres', this)">&#127848; Postres</button>
+        <button class="filter-btn" onclick="filtrar('agregados', this)">&#129472; Agregados</button>
+        <button class="filter-btn" onclick="filtrar('agregados pizzas familiares', this)">&#129472; Agregados Pizzas Familiares</button>
+      </nav>
+    </div>
+
+    <main class="container">
+        <h3 class="section-title">Nuestra Carta</h3>
+        <div id="menu-grid" class="menu-grid">
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-branding">
+            <p>DAHA Restaurante &copy; 2026</p>
+            <p class="agency-tag">Digital Experience by
+                <a href="https://agenciaseniors.com" target="_blank" class="agency-link">AGENCY SENIORS</a>
+            </p>
+        </div>
+
+        <a href="login.html" class="admin-button-premium">
+            <span class="material-icons">admin_panel_settings</span> Acceso Gerencial
+        </a>
+    </footer>
+
+    <div id="modal-detalle" class="modal-overlay" onclick="if(event.target == this) cerrarDetalle()">
+        <div class="modal-card">
+            <div class="btn-close-modal" onclick="cerrarDetalle()">&#10005;</div>
+
+            <div class="modal-image-container">
+                <img id="det-img" src="" alt="" class="modal-img">
+            </div>
+
+            <div class="modal-info-container">
+                <div class="modal-header-row" style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2 id="det-titulo" style="margin:0; font-size:1.5rem; color:var(--navy);"></h2>
+                    <div id="det-price" class="modal-price-tag"></div>
+                </div>
+
+                <p id="det-desc" class="modal-description" style="margin:15px 0; color:var(--text-secondary); line-height:1.4;"></p>
+
+                <div class="valoracion-box" onclick="abrirListaOpiniones()" style="cursor:pointer; background:var(--mint-soft); padding:12px; border-radius:12px;">
+                    <div class="val-main" style="display:flex; justify-content:space-between;">
+                        <span style="color:var(--text-secondary);">Valoraci&oacute;n:</span>
+                        <span style="color:var(--coral); font-weight:bold;">&#9733; <span id="det-puntuacion-valor">0.0</span></span>
+                    </div>
+                    <div style="text-align:right; font-size:0.75rem; color:var(--navy); margin-top:4px; font-weight:600;">
+                        (Ver rese&ntilde;as) <span id="det-cantidad-opiniones"></span>
+                    </div>
+                </div>
+
+                <button class="btn-dejar-opinion-principal" onclick="abrirOpinionDesdeDetalle()">
+                    DEJAR OPINI&Oacute;N
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-opinion" class="modal" onclick="if(event.target == this) cerrarModalOpiniones()">
+        <div class="modal-content" style="padding:30px; text-align:center;">
+            <span class="close-btn-float" style="top:10px; right:10px;" onclick="cerrarModalOpiniones()">&times;</span>
+
+            <h3 style="color:var(--navy); margin-bottom:20px; font-family:'Archivo Black', sans-serif; letter-spacing:1px;">
+                Calificar Experiencia
+            </h3>
+
+            <div class="stars" id="stars-container" style="font-size:3rem; color:#ddd; cursor:pointer; margin-bottom:20px;">
+                <span data-val="1">&#9733;</span><span data-val="2">&#9733;</span><span data-val="3">&#9733;</span><span data-val="4">&#9733;</span><span data-val="5">&#9733;</span>
+            </div>
+
+            <input type="text" id="cliente-nombre" placeholder="Tu nombre (Opcional)" class="input-stylish" style="width:100%; margin-bottom:10px;">
+            <textarea id="cliente-comentario" rows="3" placeholder="&iquest;Qu&eacute; te pareci&oacute;?" class="input-stylish" style="width:100%; margin-bottom:20px;"></textarea>
+
+            <button class="btn-big-action" id="btn-enviar-opinion" onclick="enviarOpinion()">ENVIAR</button>
+        </div>
+    </div>
+
+    <div id="modal-lista-opiniones" class="modal-overlay" style="display:none; z-index:2100;" onclick="if(event.target == this) cerrarListaOpiniones()">
+        <div class="modal-card" style="max-height:70vh; display:flex; flex-direction:column;">
+            <div class="btn-close-modal" onclick="cerrarListaOpiniones()">&#10005;</div>
+
+            <h3 style="color:var(--navy); margin-bottom:15px; border-bottom:1px solid var(--mint); padding-bottom:10px; font-family:'Archivo Black', sans-serif; letter-spacing:1px;">
+                Opiniones de clientes
+            </h3>
+
+            <div id="contenedor-opiniones-full" style="overflow-y:auto; flex:1; padding-right:5px;">
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=1.0"></script>
+</body>
+</html>
