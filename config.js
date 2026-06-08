@@ -13,12 +13,10 @@
 // =========================================================
 
 const CONFIG = {
-    SUPABASE_URL: 'https://TU-PROYECTO.supabase.co',
-    SUPABASE_KEY: 'TU_PUBLISHABLE_KEY',
-    RESTAURANT_ID: 'TU-UUID-DAHA'
+    SUPABASE_URL: 'https://xwkmhpcombsauoozyidi.supabase.co',
+    SUPABASE_KEY: 'sb_publishable_5iDJi-xK69y1DM0nFYjqlw_TaozemSt',
+    RESTAURANT_ID: '73229655-cc70-4dcf-ac76-fb36c025e46e'
 };
 
 // Cliente global de Supabase
-const supabaseClient = (typeof supabase !== 'undefined')
-    ? supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY)
-    : null;
+const supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
